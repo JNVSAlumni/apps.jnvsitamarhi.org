@@ -1,3 +1,5 @@
+import { BNPLogoDataUrl } from "./components/SocialPost/bnpLogo";
+
 export const Config = {
   AccountsAPI: "https://json.jnvsitamarhi.org/accounts.json",
   AlumniSearchAPI: "https://json.jnvsitamarhi.org/alumni.json",
@@ -5,4 +7,5 @@ export const Config = {
   SocialPostLogo: "https://cdn.jnvsitamarhi.org/static/images/logo.webp",
   SocialPostWebsite: "www.jnvsitamarhi.org",
   SocialPostHandle: "JNV Sitamarhi Alumni Association",
+  BNPLogo: BNPLogoDataUrl,
 };

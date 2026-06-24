@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Alert, Button, MenuItem, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Button, Checkbox, FormControlLabel, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import DownloadIcon from "@mui/icons-material/Download";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
@@ -18,8 +18,13 @@ import {
   batchStyles,
   bodyStyles,
   cardStyles,
+  checkboxStyles,
   cornerBottomStyles,
   cornerTopStyles,
+  dualTitleAmpersandStyles,
+  dualTitleAreaStyles,
+  dualTitlePrimaryStyles,
+  dualTitleSecondaryStyles,
   fieldStyles,
   footerNoteStyles,
   footerStyles,
@@ -30,6 +35,7 @@ import {
   headerStyles,
   headerTextWrapStyles,
   headerWatermarkStyles,
+  logoDualStyles,
   logoStyles,
   messageStyles,
   nameStyles,
@@ -133,10 +139,14 @@ export const SocialPost = () => {
   const [messageEdited, setMessageEdited] = React.useState<boolean>(false);
   const [photoDataUrl, setPhotoDataUrl] = React.useState<string>("");
   const [logoDataUrl, setLogoDataUrl] = React.useState<string>(Config.SocialPostLogo);
+  const [includeBnp, setIncludeBnp] = React.useState<boolean>(false);
   const [isExporting, setIsExporting] = React.useState<boolean>(false);
   const [errorMessage, setErrorMessage] = React.useState<string>("");
 
   const postType = getPostType(postTypeValue);
+
+  // BNP logo is embedded as a base64 data URL, so it is always ready to render.
+  const bnpLogoDataUrl = Config.BNPLogo;
 
   React.useEffect(() => {
     let active = true;
@@ -331,6 +341,18 @@ export const SocialPost = () => {
           }}
         />
 
+        <FormControlLabel
+          sx={checkboxStyles}
+          control={
+            <Checkbox
+              checked={includeBnp}
+              onChange={(event) => setIncludeBnp(event.target.checked)}
+              color="primary"
+            />
+          }
+          label="Include Bihar Navodaya Pariwar (BNP)"
+        />
+
         <Stack direction="row" sx={uploadRowStyles}>
           <Button
             variant="outlined"
@@ -388,19 +410,43 @@ export const SocialPost = () => {
             <div style={cornerTopStyles(postType)} />
             <div style={cornerBottomStyles(postType)} />
 
-            <div style={headerStyles(postType)}>
+            <div style={headerStyles(postType, includeBnp)}>
               <div style={headerWatermarkStyles} />
-              <img
-                src={logoDataUrl}
-                alt="JNV Sitamarhi logo"
-                crossOrigin="anonymous"
-                style={logoStyles}
-              />
-              <div style={headerTextWrapStyles}>
-                <div style={orgNameStyles}>
-                  JNV Sitamarhi <span style={orgSubStyles}>Alumni Association</span>
-                </div>
-              </div>
+              {includeBnp ? (
+                <>
+                  <img
+                    src={logoDataUrl}
+                    alt="JNV Sitamarhi logo"
+                    crossOrigin="anonymous"
+                    style={logoDualStyles}
+                  />
+                  <div style={dualTitleAreaStyles}>
+                    <div style={dualTitlePrimaryStyles}>JNV Sitamarhi Alumni Association</div>
+                    <div style={dualTitleAmpersandStyles}>&amp;</div>
+                    <div style={dualTitleSecondaryStyles}>Bihar Navodaya Pariwar</div>
+                  </div>
+                  <img
+                    src={bnpLogoDataUrl}
+                    alt="Bihar Navodaya Pariwar logo"
+                    crossOrigin="anonymous"
+                    style={logoDualStyles}
+                  />
+                </>
+              ) : (
+                <>
+                  <img
+                    src={logoDataUrl}
+                    alt="JNV Sitamarhi logo"
+                    crossOrigin="anonymous"
+                    style={logoStyles}
+                  />
+                  <div style={headerTextWrapStyles}>
+                    <div style={orgNameStyles}>
+                      JNV Sitamarhi <span style={orgSubStyles}>Alumni Association</span>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
             <div style={headerAccentStyles(postType)} />
 
@@ -411,9 +457,9 @@ export const SocialPost = () => {
               </div>
 
               {photoDataUrl ? (
-                <img src={photoDataUrl} alt={displayName} style={photoStyles(postType)} />
+                <img src={photoDataUrl} alt={displayName} style={photoStyles(postType, includeBnp ? 120 : 152)} />
               ) : (
-                <div style={photoPlaceholderStyles(postType)}>{getInitials(name)}</div>
+                <div style={photoPlaceholderStyles(postType, includeBnp ? 120 : 152)}>{getInitials(name)}</div>
               )}
 
               <div style={nameStyles}>{displayName}</div>

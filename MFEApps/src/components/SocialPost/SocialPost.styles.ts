@@ -50,6 +50,10 @@ export const fieldStyles: SxProps = {
   margin: "8px 0px",
 };
 
+export const checkboxStyles: SxProps = {
+  margin: "4px 0px",
+};
+
 export const uploadRowStyles: SxProps = {
   alignItems: "center",
   gap: "12px",
@@ -127,18 +131,21 @@ export const cornerBottomStyles = (type: IPostType): React.CSSProperties => ({
   pointerEvents: "none",
 });
 
-export const headerStyles = (type: IPostType): React.CSSProperties => ({
+export const headerStyles = (type: IPostType, dual = false): React.CSSProperties => ({
   position: "relative",
   overflow: "hidden",
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
-  gap: 16,
-  padding: "20px 26px",
+  gap: dual ? 14 : 16,
+  padding: dual ? "11px 22px" : "20px 26px",
   background: `linear-gradient(125deg, ${type.headerFrom} 0%, ${type.headerTo} 100%)`,
   color: "#ffffff",
   boxShadow: "inset 0 -1px 0 rgba(0,0,0,0.08)",
+  // Only the dual (BNP) header keeps a fixed height so the taller two-line
+  // title is not clipped; the single-logo header is left exactly as before.
+  ...(dual ? { flexShrink: 0 } : {}),
 });
 
 export const headerWatermarkStyles: React.CSSProperties = {
@@ -195,6 +202,57 @@ export const orgSubStyles: React.CSSProperties = {
   fontWeight: 700,
 };
 
+/* ---- Dual-logo header (only used when "Include BNP" is checked) ---- */
+
+export const logoDualStyles: React.CSSProperties = {
+  ...logoStyles,
+  width: 52,
+  height: 52,
+  padding: 6,
+  boxShadow: "0 3px 8px rgba(0,0,0,0.15)",
+};
+
+export const dualTitleAreaStyles: React.CSSProperties = {
+  position: "relative",
+  zIndex: 1,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  textAlign: "center",
+  flex: 1,
+  minWidth: 0,
+};
+
+export const dualTitlePrimaryStyles: React.CSSProperties = {
+  fontFamily: fontSans,
+  fontSize: 17,
+  fontWeight: 700,
+  lineHeight: 1.1,
+  letterSpacing: "-0.2px",
+  whiteSpace: "nowrap",
+  textShadow: "0 1px 2px rgba(0,0,0,0.14)",
+};
+
+export const dualTitleAmpersandStyles: React.CSSProperties = {
+  fontFamily: fontSans,
+  fontSize: 13,
+  fontWeight: 500,
+  opacity: 0.85,
+  margin: "3px 0",
+};
+
+export const dualTitleSecondaryStyles: React.CSSProperties = {
+  fontFamily: fontSans,
+  fontSize: 17,
+  fontWeight: 600,
+  lineHeight: 1.1,
+  letterSpacing: "-0.2px",
+  whiteSpace: "nowrap",
+  color: "#e0f2f1",
+  textShadow: "0 1px 2px rgba(0,0,0,0.14)",
+};
+
 export const headerAccentStyles = (type: IPostType): React.CSSProperties => ({
   height: 4,
   width: "100%",
@@ -229,9 +287,9 @@ export const badgeStyles = (type: IPostType): React.CSSProperties => ({
   marginBottom: 18,
 });
 
-export const photoStyles = (type: IPostType): React.CSSProperties => ({
-  width: 152,
-  height: 152,
+export const photoStyles = (type: IPostType, size = 152): React.CSSProperties => ({
+  width: size,
+  height: size,
   borderRadius: "50%",
   objectFit: "cover",
   border: "4px solid #ffffff",
@@ -240,12 +298,12 @@ export const photoStyles = (type: IPostType): React.CSSProperties => ({
   background: "#eceff1",
 });
 
-export const photoPlaceholderStyles = (type: IPostType): React.CSSProperties => ({
-  ...photoStyles(type),
+export const photoPlaceholderStyles = (type: IPostType, size = 152): React.CSSProperties => ({
+  ...photoStyles(type, size),
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  fontSize: 52,
+  fontSize: size <= 120 ? 42 : 52,
   fontWeight: 700,
   color: type.accentDark,
   background: `${type.accent}1a`,
