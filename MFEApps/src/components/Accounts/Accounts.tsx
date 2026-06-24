@@ -151,7 +151,7 @@ export const Accounts = () => {
   return (
     <TableContainer component={Paper}>
       <Table sx={tableStyles} aria-label="simple table">
-        <TableHead>
+        <TableHead sx={{ "& th": { fontWeight: "bold" } }}>
           <TableRow>
             <TableCell sx={tableColumnStyles}>Date</TableCell>
             <TableCell sx={tableColumnStyles} align="left">CR/DR</TableCell>
