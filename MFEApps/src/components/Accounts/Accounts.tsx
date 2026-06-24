@@ -139,7 +139,7 @@ export const Accounts = () => {
   React.useEffect(() => {
     const random = Math.floor(Math.random() * 9000 + 1000);
     const separator = Config.AccountsAPI.includes("?") ? "&" : "?";
-    fetch(Config.AccountsAPI + separator + "random=" + random)
+    fetch(Config.AccountsAPI + separator + "random=" + random, { cache: "no-store" })
       .then((response) => response.text())
       .then((text) => {
         const data = parseCsvToTransactions(text);
