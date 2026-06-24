@@ -25,18 +25,39 @@ const MONTHS: Record<string, number> = {
   jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
 };
 
-// Format dates such as "1-Apr-2026" reliably across browsers.
+const MONTH_LABELS = [
+  "Jan", "Feb", "March", "April", "May", "June",
+  "July", "Aug", "Sept", "Oct", "Nov", "Dec",
+];
+
+// Format dates such as "1-Apr-2026" as "12 April 2026".
 const formatDate = (value: string): string => {
   const match = value.match(/^(\d{1,2})-([A-Za-z]{3,})-(\d{4})$/);
+  let date: Date | null = null;
   if (match) {
     const month = MONTHS[match[2].slice(0, 3).toLowerCase()];
     if (month !== undefined) {
-      return new Date(Number(match[3]), month, Number(match[1])).toLocaleDateString();
+      date = new Date(Number(match[3]), month, Number(match[1]));
     }
   }
-  const parsed = new Date(value);
-  return isNaN(parsed.getTime()) ? value : parsed.toLocaleDateString();
+  if (!date) {
+    const parsed = new Date(value);
+    date = isNaN(parsed.getTime()) ? null : parsed;
+  }
+  if (!date) {
+    return value;
+  }
+  return `${date.getDate()} ${MONTH_LABELS[date.getMonth()]} ${date.getFullYear()}`;
 };
+
+// Format a net amount as "+ ₹3,000" or "- ₹500" using the Indian
+// numbering system, with the rupee sign shown in bold.
+const formatAmount = (amount: number): React.ReactElement => (
+  <>
+    {amount < 0 ? "-" : "+"} <strong>₹</strong>
+    {Math.abs(amount).toLocaleString("en-IN")}
+  </>
+);
 
 // Parse CSV text into rows of fields, honouring quoted fields that may
 // contain commas, newlines or escaped double quotes ("").
@@ -142,7 +163,7 @@ export const Accounts = () => {
           {transactions.filter(x => x.Credit != x.Debit).map((row) => (
             <TableRow key={row.Serial} sx={tableRowStyles}>
               <TableCell align="left">{formatDate(row.Date)}</TableCell>
-              <TableCell align="left">{row.Credit - row.Debit} ₹</TableCell>
+              <TableCell align="left">{formatAmount(row.Credit - row.Debit)}</TableCell>
               <TableCell align="left">{row.TransactedBy}</TableCell>
               <TableCell align="left">{row.Description}</TableCell>
             </TableRow>
